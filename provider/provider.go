@@ -20,6 +20,11 @@ func Provider() terraform.ResourceProvider {
 				Optional: true,
 				Default:  os.Getenv("CLOUD_CONFORMITY_API_KEY"),
 			},
+			"region" : {
+				Type:	  schema.TypeString,
+				Optional: true,
+				Default:  "us-west-2",
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"cloudconformity_account": resourceCloudConformityAccount(),
@@ -33,8 +38,10 @@ func Provider() terraform.ResourceProvider {
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
+	region := d.Get("region").(string)
+
 	rt := httptransport.New(
-		client.DefaultHost,
+		fmt.Sprintf("%s-api.cloudconformity.com", region),
 		client.DefaultBasePath,
 		client.DefaultSchemes,
 	)
