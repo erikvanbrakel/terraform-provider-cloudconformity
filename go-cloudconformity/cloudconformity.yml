@@ -1,0 +1,416 @@
+swagger: "2.0"
+info:
+  title: "Cloud Conformity"
+  description: "The Cloud Conformity API allows you to programmatically interact with Cloud Conformity."
+  version: "1.0.0"
+host: "us-west-2-api.cloudconformity.com"
+basePath: "/v1"
+schemes: ["https"]
+consumes: ["application/vnd.api+json"]
+produces: ["application/vnd.api+json"]
+responses:
+  400:
+    description: "Bad Request"
+    schema:
+      $ref: '#/definitions/error'
+  401:
+    description: "Unauthorized"
+    schema:
+      $ref: '#/definitions/error'
+  403:
+    description: "Forbidden"
+    schema:
+      $ref: '#/definitions/error'
+  404:
+    description: "Not Found"
+    schema:
+      $ref: '#/definitions/error'
+  422:
+    description: "Unprocessable Entity"
+    schema:
+      $ref: '#/definitions/error'
+  500:
+    description: "Internal Server Error"
+    schema:
+      $ref: '#/definitions/error'
+
+paths:
+  /accounts:
+    post:
+      operationId: "createAccount"
+      summary: "Create an account"
+      description: "This endpoint is used to register a new AWS account with Cloud Conformity."
+      tags: ["account"]
+
+      parameters:
+        - in: body
+          name: account
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/account'
+
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/accounts'
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        403:
+          $ref: '#/responses/403'
+        404:
+          $ref: '#/responses/404'
+        422:
+          $ref: '#/responses/422'
+        500:
+          $ref: '#/responses/500'
+
+    get:
+      operationId: "listAccounts"
+      summary: "List all accounts"
+      description: "This endpoint allows you to query all accounts that you have access to."
+      tags: ["account"]
+
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/accounts'
+
+  /accounts/{accountId}:
+    get:
+      operationId: "getAccount"
+      summary: "Get Account Details"
+      description: "This endpoint allows you to get the details of the specified account."
+      tags: ["account"]
+
+      parameters:
+        - in: path
+          name: accountId
+          type: string
+          required: true
+          description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/definitions/accounts'
+
+    patch:
+      operationId: "updateAccount"
+      summary: "Update Account"
+      description: "A PATCH request to this endpoint allows changes to the account name, enviornment, and code."
+      tags: ["account"]
+
+      parameters:
+       - in: path
+         name: accountId
+         type: string
+         required: true
+         description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+    delete:
+      operationId: "deleteAccount"
+      summary: "Delete Account"
+      description: "A DELETE request to this endpoint allows an ADMIN to delete the specified account."
+      tags: ["account"]
+
+      parameters:
+        - in: path
+          name: accountId
+          type: string
+          required: true
+          description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                properties:
+                  status:
+                    type: string
+
+  /accounts/{accountId}/access:
+    get:
+      operationId: "getAccountAccessSettings"
+      summary: "Get Account Access Setting"
+      description: "This endpoint allows ADMIN users to get the current setting Cloud Conformity uses to access the specified account."
+      tags: ["account"]
+
+      parameters:
+        - in: path
+          name: accountId
+          type: string
+          required: true
+          description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+  /accounts/{accountId}/scan:
+    post:
+      operationId: "scanAccount"
+      summary: "Scan Account"
+      description: "This endpoint allows you to run conformity bot for the specified account."
+      tags: ["account"]
+
+      parameters:
+        - in: path
+          name: accountId
+          type: string
+          required: true
+          description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+  /accounts/{id}/subscription:
+    patch:
+      operationId: "updateAccountSubscription"
+      summary: "Update Account Subscription"
+      description: "A PATCH request to this endpoint allows you to change the add-on package subscription of the specified account."
+      tags: ["account"]
+
+      parameters:
+       - in: path
+         name: id
+         type: string
+         required: true
+         description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+  "/accounts/{accountId}/settings/rules":
+    get:
+      operationId: "getRuleSettings"
+      summary: "Get Rule Settings"
+      description: "A GET request to this endpoint allows you to get rule settings for all configured rules of the specified account."
+      tags: ["rules"]
+
+      parameters:
+       - in: path
+         name: accountId
+         type: string
+         required: true
+         description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+    patch:
+      operationId: "updateRuleSettings"
+      summary: "Update Rule Settings"
+      description: "A PATCH request to this endpoint allows you to customize rule settings for the specified account."
+      tags: ["rules"]
+
+      parameters:
+       - in: path
+         name: accountId
+         type: string
+         required: true
+         description: "Account ID"
+
+      responses:
+        200:
+          description: "OK"
+
+  "/accounts/{accountId}/settings/rules/{ruleId}":
+    get:
+      operationId: "getRuleSetting"
+      summary: "Get Rule Setting"
+      description: " GET request to this endpoint allows you to get configured rule setting for the specified rule Id of the specified account."
+      tags: ["rules"]
+
+      parameters:
+       - in: path
+         name: accountId
+         type: string
+         required: true
+         description: "Account ID"
+       - in: path
+         name: ruleId
+         type: string
+         required: true
+         description: "Rule ID"
+      responses:
+        200:
+          description: "OK"
+
+    patch:
+      operationId: "updateRuleSetting"
+      summary: "Update Rule Setting"
+      description: "A PATCH request to this endpoint allows you to customize rule setting for the specified rule Id of the specified account."
+      tags: ["rules"]
+
+      parameters:
+       - in: path
+         name: accountId
+         type: string
+         required: true
+         description: "Account ID"
+       - in: path
+         name: ruleId
+         type: string
+         required: true
+         description: "Rule ID"
+
+      responses:
+        200:
+          description: "OK"
+
+  /organisation/external-id:
+    get:
+      operationId: getExternalId
+      summary: "Get Organisation External ID"
+      description: "This endpoint allows you to get your organisation's external ID."
+      tags: ["external-id"]
+
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  "type":
+                    type: string
+                    example: "external-ids"
+                  id:
+                    type: string
+                    example: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeffffff"
+                  attributes:
+                    type: object
+                    properties:
+                      valid-until:
+                        type: integer
+                        example: 1526662959632
+
+definitions:
+  account:
+    type: object
+    properties:
+      "type":
+        type: string
+        enum: ["account"]
+      attributes:
+        type: object
+        properties:
+          name:
+            type: string
+          environment:
+            type: string
+          access:
+            type: object
+            properties:
+              keys:
+                type: object
+                properties:
+                  roleArn:
+                    type: string
+                  externalId:
+                    type: string
+          costPackage:
+            type: boolean
+            default: false
+          securityPackage:
+            type: boolean
+            default: false
+
+  accounts:
+    type: object
+    properties:
+      "type":
+        type: string
+        enum: ["accounts"]
+      id:
+        type: string
+      attributes:
+        type: object
+        properties:
+          name:
+            type: string
+          environment:
+            type: string
+          awsaccount-id:
+            type: string
+          security-package:
+            type: boolean
+          cost-package:
+            type: boolean
+          created-date:
+            type: integer
+          last-notified-date:
+            type: integer
+          last-checked-date:
+            type: integer
+          last-monitoring-event-date:
+            type: integer
+          billing-account-id:
+            type: string
+      relationships:
+        type: object
+        properties:
+          organisation:
+            $ref: '#/definitions/organisation'
+  organisation:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          "type":
+            type: string
+            enum: ["organisations"]
+          id:
+            type: string
+  error:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type: integer
+            source:
+              type: object
+              properties:
+                source:
+                  type: object
+                  properties:
+                    pointer:
+                      type: string
+            detail:
+              type: string
