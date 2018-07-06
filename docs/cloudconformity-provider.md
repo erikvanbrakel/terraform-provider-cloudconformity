@@ -45,5 +45,7 @@ $ terraform plan
 ## Argument Reference
  - `api_key` - (Optional) This is the Cloud Conformity API Key. It must be provided, but
    it can also be sourced from the `CLOUDCONFORMITY_API_KEY` environment variable.
-
+ - `region` - (Optional) The region your organisation resides in. see https://github.com/cloudconformity/documentation-api
+   for the available regions.
+   
 [Back to Index](README.md)
